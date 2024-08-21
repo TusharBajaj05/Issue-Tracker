@@ -40,7 +40,7 @@ module.exports = function (app) {
 
       if(!req.body.issue_title || !req.body.issue_text || !req.body.created_by) {
         // return res.json({ error: 'required field(s) missing' });
-        return res.json('required field(s) missing');
+        return res.json({ error: 'required field(s) missing' });
       }
 
       let newIssue = new Issue({
@@ -68,7 +68,7 @@ module.exports = function (app) {
       let project = req.params.project;
 
       if(!req.body._id) {
-        return res.json('missing _id');
+        return res.json({ error: 'missing _id' });
       }
 
       let updateObject = {};
@@ -77,9 +77,9 @@ module.exports = function (app) {
           updateObject[key] = req.body[key];
         }
       })
-      // console.log(updateObject)
       if(Object.keys(updateObject).length < 2) {
-        return res.json('no update field sent' + ',' + '_id:' + req.body._id)
+        return res.json({error: "no update field(s) sent", _id: updateObject._id});
+        // return res.json("no update field(s) sent");
       }
 
       updateObject['updated_on'] = new Date().toUTCString();
@@ -91,13 +91,12 @@ module.exports = function (app) {
       )
       .then (updatedIssue => {
         if(!updatedIssue) {
-          return res.json('could not update' + ',' + '_id:' + req.body._id);
+          return res.json({error: 'could not update', _id: req.body._id});
         }
-        return res.json('successfully updated' + ',' + '_id:' + req.body._id);
+        return res.json({result: 'successfully updated', _id: req.body._id });
       })
       .catch(err => {
-        console.log(err);
-        return res.json('could not update' + ',' + '_id:' + req.body._id);
+        return res.json({error: 'could not update', _id: req.body._id});
       })
     })
     
@@ -105,15 +104,19 @@ module.exports = function (app) {
       let project = req.params.project;
 
       if(!req.body._id) {
-        return res.json('missing _id');
+        return res.json({ error: 'missing _id' });
       }
 
       Issue.findByIdAndDelete(req.body._id)
       .then(deletedIssue => {
         if(!deletedIssue) {
-          return res.json('could not delete' + ',' + '_id:' + req.body._id)
+          // return res.json('could not delete' + ',' + '_id:' + req.body._id)
+          return res.json({error: 'could not delete', _id: req.body._id})
         }
-        return res.json('successfully deleted' + ',' + '_id:' + deletedIssue.id)
+        return res.json({ result: 'successfully deleted', _id: deletedIssue.id });
+      })
+      .catch(err => {
+        return res.json({error: 'could not delete', _id: req.body.id})
       }) 
     });
     
