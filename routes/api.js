@@ -52,7 +52,7 @@ module.exports = function (app) {
         assigned_to: req.body.assigned_to || '',
         open: true,
         status_text: req.body.status_text || '',
-        project: req.body.project,
+        project: project,
       });
 
       newIssue.save()
@@ -79,7 +79,6 @@ module.exports = function (app) {
       })
       if(Object.keys(updateObject).length < 2) {
         return res.json({error: "no update field(s) sent", _id: updateObject._id});
-        // return res.json("no update field(s) sent");
       }
 
       updateObject['updated_on'] = new Date().toUTCString();
@@ -87,13 +86,14 @@ module.exports = function (app) {
       Issue.findByIdAndUpdate(
         req.body._id,
         updateObject,
+        // {updateObject, updated_on: new Date().toUTCString()},
         {new: true}
       )
       .then (updatedIssue => {
         if(!updatedIssue) {
           return res.json({error: 'could not update', _id: req.body._id});
         }
-        return res.json({result: 'successfully updated', _id: req.body._id });
+        return res.json({result: 'successfully updated', _id: updatedIssue._id });
       })
       .catch(err => {
         return res.json({error: 'could not update', _id: req.body._id});

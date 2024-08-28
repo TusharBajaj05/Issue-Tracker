@@ -83,7 +83,7 @@ suite('Functional Tests', function() {
                 assert.equal(res.body.created_by, "Functional Test - Every field filled in");
                 assert.equal(res.body.assigned_to, "Chai and Mocha");
                 assert.equal(res.body.status_text, "In QA");
-                // assert.equal(res.body.project, "test");
+                assert.equal(res.body.project, "test");
                 id1 = res.body._id;
                 done();
             });
@@ -107,7 +107,7 @@ suite('Functional Tests', function() {
                 );
                 assert.equal(res.body.assigned_to, "");
                 assert.equal(res.body.status_text, "");
-                // assert.equal(res.body.project, "test");
+                assert.equal(res.body.project, "test");
                 id2 = res.body._id;
                 done();
             })
