@@ -80,13 +80,12 @@ module.exports = function (app) {
       if(Object.keys(updateObject).length < 2) {
         return res.json({error: "no update field(s) sent", _id: updateObject._id});
       }
-
-      updateObject['updated_on'] = new Date().toUTCString();
+      
+      updateObject['updated_on'] = new Date();
 
       Issue.findByIdAndUpdate(
         req.body._id,
         updateObject,
-        // {updateObject, updated_on: new Date().toUTCString()},
         {new: true}
       )
       .then (updatedIssue => {
